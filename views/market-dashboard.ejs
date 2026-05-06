@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Market Dashboard</h1>
+    <p class="welcome-text">Welcome, <%= user.name %></p>
+    <p class="header-links">
+  <a href="/market/products/add">Add New Product</a>
+  <span>|</span>
+  <a href="/market/profile/edit">Edit Profile</a>
+  <span>|</span>
+  <a href="/logout">Logout</a>
+</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Your Products</h2>
+
+      <% if (products.length === 0) { %>
+        <p>You have not added any products yet.</p>
+      <% } else { %>
+
+        <div class="product-list">
+          <% products.forEach(product => { %>
+
+            <div class="product-card <%= product.is_expired ? 'expired-product' : '' %>">
+              <img src="<%= product.image %>" alt="<%= product.title %>">
+
+              <div>
+                <h3><%= product.title %></h3>
+
+                <% if (product.is_expired) { %>
+                  <p class="expired-label">Expired Product</p>
+                <% } %>
+
+                <p>Stock: <%= product.stock %></p>
+                <p>Normal Price: <%= product.normal_price %> TL</p>
+                <p>Discounted Price: <%= product.discounted_price %> TL</p>
+                <p>Expiration Date: <%= product.expiration_date.toISOString().slice(0, 10) %></p>
+                <p>
+  <a href="/market/products/<%= product.id %>/edit">Edit</a>
+</p>
+
+<form 
+  action="/market/products/<%= product.id %>/delete" 
+  method="POST"
+  onsubmit="return confirm('Are you sure you want to delete this product?')"
+>
+  <button type="submit" class="delete-button">Delete</button>
+</form>
+              </div>
+            </div>
+
+          <% }) %>
+        </div>
+
+      <% } %>
+    </section>
+  </main>
+
+</body>
+</html>

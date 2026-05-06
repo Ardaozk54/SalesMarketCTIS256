@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Edit Product</h1>
+    <p>Update product information</p>
+  </header>
+
+  <main>
+    <section class="card">
+
+      <form 
+        action="/market/products/<%= product.id %>/edit" 
+        method="POST" 
+        enctype="multipart/form-data"
+      >
+
+        <label>Product Title</label>
+        <input 
+          type="text" 
+          name="title" 
+          value="<%= form.title || '' %>"
+        >
+        <% if (errors.title) { %>
+          <p class="error"><%= errors.title.msg %></p>
+        <% } %>
+
+        <label>Stock</label>
+        <input 
+          type="number" 
+          name="stock" 
+          value="<%= form.stock || '' %>"
+        >
+        <% if (errors.stock) { %>
+          <p class="error"><%= errors.stock.msg %></p>
+        <% } %>
+
+        <label>Normal Price</label>
+        <input 
+          type="number" 
+          step="0.01" 
+          name="normal_price" 
+          value="<%= form.normal_price || '' %>"
+        >
+        <% if (errors.normal_price) { %>
+          <p class="error"><%= errors.normal_price.msg %></p>
+        <% } %>
+
+        <label>Discounted Price</label>
+        <input 
+          type="number" 
+          step="0.01" 
+          name="discounted_price" 
+          value="<%= form.discounted_price || '' %>"
+        >
+        <% if (errors.discounted_price) { %>
+          <p class="error"><%= errors.discounted_price.msg %></p>
+        <% } %>
+
+        <label>Expiration Date</label>
+        <input 
+          type="date" 
+          name="expiration_date" 
+          value="<%= form.expiration_date instanceof Date ? form.expiration_date.toISOString().slice(0, 10) : form.expiration_date %>"
+        >
+        <% if (errors.expiration_date) { %>
+          <p class="error"><%= errors.expiration_date.msg %></p>
+        <% } %>
+
+        <label>Current Image</label>
+        <img 
+          src="<%= product.image %>" 
+          alt="<%= product.title %>" 
+          class="preview-image"
+        >
+
+        <label>New Product Image</label>
+        <input type="file" name="image">
+
+        <button type="submit">Update Product</button>
+      </form>
+
+      <p>
+        <a href="/market">Back to Dashboard</a>
+      </p>
+
+    </section>
+  </main>
+
+</body>
+</html>

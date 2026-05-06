@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Edit Market Profile</h1>
+    <p>Update your market information</p>
+  </header>
+
+  <main>
+    <section class="card">
+
+      <form action="/market/profile/edit" method="POST">
+
+        <label>Email</label>
+        <input 
+          type="text" 
+          name="email" 
+          value="<%= form.email || '' %>"
+        >
+        <% if (errors.email) { %>
+          <p class="error"><%= errors.email.msg %></p>
+        <% } %>
+
+        <label>Market Name</label>
+        <input 
+          type="text" 
+          name="name" 
+          value="<%= form.name || '' %>"
+        >
+        <% if (errors.name) { %>
+          <p class="error"><%= errors.name.msg %></p>
+        <% } %>
+
+        <label>City</label>
+        <input 
+          type="text" 
+          name="city" 
+          value="<%= form.city || '' %>"
+        >
+        <% if (errors.city) { %>
+          <p class="error"><%= errors.city.msg %></p>
+        <% } %>
+
+        <label>District</label>
+        <input 
+          type="text" 
+          name="district" 
+          value="<%= form.district || '' %>"
+        >
+        <% if (errors.district) { %>
+          <p class="error"><%= errors.district.msg %></p>
+        <% } %>
+
+        <label>New Password</label>
+        <input 
+          type="password" 
+          name="password"
+          placeholder="Leave empty to keep current password"
+        >
+
+        <button type="submit">Update Profile</button>
+      </form>
+
+      <p>
+        <a href="/market">Back to Dashboard</a>
+      </p>
+
+    </section>
+  </main>
+
+</body>
+</html>
