@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header>
+    <h1>My Cart</h1>
+    <p class="welcome-text">Welcome, <%= user.name %></p>
+
+    <p class="header-links">
+      <a href="/consumer">Search Products</a>
+      <span>|</span>
+      <a href="/consumer/profile/edit">Edit Profile</a>
+      <span>|</span>
+      <a href="/logout">Logout</a>
+    </p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Shopping Cart</h2>
+
+      <p id="cart-message"></p>
+
+      <% if (items.length === 0) { %>
+        <p>Your cart is empty.</p>
+      <% } else { %>
+
+        <div class="cart-list" id="cart-list">
+          <% items.forEach(item => { %>
+
+            <div 
+              class="cart-item" 
+              id="cart-item-<%= item.cart_item_id %>"
+            >
+              <img src="<%= item.image %>" alt="<%= item.title %>">
+
+              <div class="cart-info">
+                <h3><%= item.title %></h3>
+
+                <p>
+                  <strong>Market:</strong>
+                  <%= item.market_name %>
+                </p>
+
+                <p>
+                  <strong>Location:</strong>
+                  <%= item.market_city %> / <%= item.market_district %>
+                </p>
+
+                <p>
+                  <strong>Stock:</strong>
+                  <%= item.stock %>
+                </p>
+
+                <p>
+                  <strong>Quantity:</strong>
+                  <input 
+                    type="number"
+                    min="1"
+                    max="<%= item.stock %>"
+                    value="<%= item.quantity %>"
+                    class="quantity-input"
+                    data-cart-item-id="<%= item.cart_item_id %>"
+                  >
+                </p>
+
+                <p>
+                  <strong>Discounted Price:</strong>
+                  <%= item.discounted_price %> TL
+                </p>
+
+                <p>
+                  <strong>Item Total:</strong>
+                  <span id="item-total-<%= item.cart_item_id %>">
+                    <%= item.item_total.toFixed(2) %>
+                  </span>
+                  TL
+                </p>
+
+                <p>
+                  <strong>Days Left:</strong>
+                  <%= item.days_left %>
+                </p>
+
+                <button 
+                  type="button"
+                  class="delete-button remove-cart-button"
+                  data-cart-item-id="<%= item.cart_item_id %>"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+
+          <% }) %>
+        </div>
+
+        <div class="cart-total" id="cart-total-box">
+          <h2>
+            Grand Total:
+            <span id="grand-total"><%= grandTotal.toFixed(2) %></span>
+            TL
+          </h2>
+
+          <button 
+            type="button" 
+            id="purchase-button"
+          >
+            Purchase
+          </button>
+        </div>
+
+      <% } %>
+    </section>
+  </main>
+
+  <script src="/js/cart.js"></script>
+</body>
+</html>
