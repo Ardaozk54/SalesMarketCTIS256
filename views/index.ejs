@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header class="hero-header only-hero">
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <div class="hero-left">
+        <span class="hero-badge">Sustainable Discount Marketplace</span>
+
+        <% if (user) { %>
+          <h1>
+            Welcome back,
+            <span class="highlight-text"><%= user.name %></span>
+          </h1>
+
+          <% if (user.role === "market") { %>
+            <p class="hero-subtitle">
+              Manage discounted products, monitor expiration dates,
+              and reduce food waste efficiently.
+            </p>
+
+            <div class="hero-actions">
+              <a href="/market" class="hero-button">Go to Market Dashboard</a>
+              <a href="/market/products/add" class="hero-button secondary-hero-button">Add Product</a>
+            </div>
+          <% } else { %>
+            <p class="hero-subtitle">
+              Search discounted nearby products, manage your cart,
+              and shop smarter before products expire.
+            </p>
+
+            <div class="hero-actions">
+              <a href="/consumer" class="hero-button">Search Products</a>
+              <a href="/cart" class="hero-button secondary-hero-button">View My Cart</a>
+            </div>
+          <% } %>
+
+        <% } else { %>
+          <h1>
+            Save Money. Reduce Waste.<br>
+            Shop Smarter.
+          </h1>
+
+          <p class="hero-subtitle">
+            Discover discounted products nearing expiration date, support sustainability,
+            and help markets reduce waste.
+          </p>
+
+          
+        <% } %>
+      </div>
+
+      <div class="hero-right">
+        <div class="session-card">
+          <% if (user) { %>
+            <div class="session-avatar">
+              <%= user.name.charAt(0).toUpperCase() %>
+            </div>
+
+            <h3>Your Session</h3>
+
+            <p><strong>Name:</strong> <%= user.name %></p>
+            <p><strong>Email:</strong> <%= user.email %></p>
+            <p><strong>Role:</strong> <span class="role-badge"><%= user.role %></span></p>
+            <p><strong>City:</strong> <%= user.city %></p>
+            <p><strong>District:</strong> <%= user.district %></p>
+
+            <% if (user.role === "market") { %>
+              <a href="/market/profile/edit" class="panel-button">Edit Market Profile</a>
+            <% } else { %>
+              <a href="/consumer/profile/edit" class="panel-button">Edit Consumer Profile</a>
+            <% } %>
+
+            <a href="/logout" class="panel-button secondary-button">Logout</a>
+          <% } else { %>
+            <div class="session-avatar">G</div>
+
+            <h3>Guest Session</h3>
+            <p>You are currently browsing as a guest.</p>
+            <p>Login or register to start using the system.</p>
+
+            <a href="/login" class="panel-button">Login</a>
+            <a href="/register" class="panel-button secondary-button">Register</a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </header>
+
+</body>
+</html>

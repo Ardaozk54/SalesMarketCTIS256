@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Email Verification</h1>
+    <p>Enter the 6-digit verification code</p>
+  </header>
+
+  <main>
+    <section class="card">
+
+        
+    <p>
+  We sent a 6-digit verification code to your email address.
+    </p>
+
+      <% if (error) { %>
+        <p class="error"><%= error %></p>
+      <% } %>
+
+      <form action="/verify/<%= userId %>" method="POST">
+        <label>Verification Code</label>
+        <input type="text" name="code">
+
+        <button type="submit">Verify</button>
+      </form>
+
+    </section>
+  </main>
+
+</body>
+</html>

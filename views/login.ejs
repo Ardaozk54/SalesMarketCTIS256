@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Login</h1>
+    <p>Access your account</p>
+  </header>
+
+  <main>
+    <section class="card">
+
+      <% if (error) { %>
+        <p class="error"><%= error %></p>
+      <% } %>
+
+      <form action="/login" method="POST">
+        <label>Email</label>
+        <input 
+          type="text" 
+          name="email" 
+          value="<%= form.email || '' %>"
+        >
+
+        <label>Password</label>
+        <input 
+          type="password" 
+          name="password"
+        >
+
+        <button type="submit">Login</button>
+      </form>
+
+      <p>
+        <a href="/register">Create an account</a>
+      </p>
+
+    </section>
+  </main>
+
+</body>
+</html>
