@@ -11,7 +11,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -22,25 +21,45 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
+-- Önce ilişkili alt tabloları (Foreign Key bağımlılığı olanları) siliyoruz
+-- --------------------------------------------------------
+DROP TABLE IF EXISTS `cart_items`;
+DROP TABLE IF EXISTS `verification_codes`;
+DROP TABLE IF EXISTS `products`;
 
---
--- Tablo için tablo yapısı `cart_items`
---
+-- --------------------------------------------------------
+-- Son olarak hiçbir bağımlılığı kalmayan ana tabloyu siliyoruz
+-- --------------------------------------------------------
+DROP TABLE IF EXISTS `users`;
 
-CREATE TABLE `cart_items` (
+
+-- --------------------------------------------------------
+-- Tablo yapısı: `users` (Ana Tablo)
+-- --------------------------------------------------------
+CREATE TABLE `users` (
   `id` int NOT NULL,
-  `consumer_id` int NOT NULL,
-  `product_id` int NOT NULL,
-  `quantity` int NOT NULL DEFAULT '1',
+  `role` enum('market','consumer') NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `city` varchar(50) NOT NULL,
+  `district` varchar(50) NOT NULL,
+  `is_verified` tinyint DEFAULT '0',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- Users Verileri
+INSERT INTO `users` (`id`, `role`, `email`, `password_hash`, `name`, `city`, `district`, `is_verified`, `created_at`) VALUES
+(1, 'market', 'cons1@hotmail.com', '$2b$10$zCPqJdKNjdILOihFXTqc8.ItMV94Z2.0DZiNVJD01bxLbYYJAYFb.', 'Cons1', 'Ankara', 'Ankara', 0, '2026-05-08 07:54:45'),
+(5, 'market', 'ismail.akkurt@ug.bilkent.edu.tr', '$2b$10$JIp.EsZ5LZ/hO6xn1AhR5OLwqBnEwNNGZ4ZeMvK70ooWay2kAnjeu', 'Et Urunleri Market', 'Ankara', 'Altındag', 1, '2026-05-08 08:53:52'),
+(6, 'market', 'arda.ozkan@ug.bilkent.edu.tr', '$2b$10$JIp.EsZ5LZ/hO6xn1AhR5OLwqBnEwNNGZ4ZeMvK70ooWay2kAnjeu', 'Manav Market', 'Ankara', 'Cankaya', 1, '2026-05-08 08:53:52'),
+(7, 'market', 'alper.duru@ug.bilkent.edu.tr', '$2b$10$JIp.EsZ5LZ/hO6xn1AhR5OLwqBnEwNNGZ4ZeMvK70ooWay2kAnjeu', 'Sut Urunleri Market', 'Istanbul', 'Kadikoy', 1, '2026-05-08 08:53:52'),
+(8, 'consumer', 'cons2@hotmail.com', '$2b$10$T7lYDLMMK47bGKmG4lhbXOcXVqThIjg0lz8Le8McfhUGkVtNOMjZC', '123', 'Ankara', 'cankaya', 1, '2026-05-08 09:00:04');
+
+
 -- --------------------------------------------------------
-
---
--- Tablo için tablo yapısı `products`
---
-
+-- Tablo yapısı: `products` (Ana Tablo - Users'a bağlı)
+-- --------------------------------------------------------
 CREATE TABLE `products` (
   `id` int NOT NULL,
   `market_id` int NOT NULL,
@@ -53,10 +72,7 @@ CREATE TABLE `products` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Tablo döküm verisi `products`
---
-
+-- Products Verileri
 INSERT INTO `products` (`id`, `market_id`, `title`, `stock`, `normal_price`, `discounted_price`, `expiration_date`, `image`, `created_at`) VALUES
 (30, 5, 'Tavuk Gogsu Schnitzel', 18, 165.00, 119.90, '2026-05-15', '/uploads/1777925527489-Chicken Breast Schnitzel.avif', '2026-05-08 08:54:40'),
 (31, 5, 'Taze Tavuk Gogsu', 24, 155.00, 109.90, '2026-05-16', '/uploads/1777925591542-Chicken Breasts.webp', '2026-05-08 08:54:40'),
@@ -88,41 +104,22 @@ INSERT INTO `products` (`id`, `market_id`, `title`, `stock`, `normal_price`, `di
 (57, 7, 'Yaban Mersinli Quark Yogurt', 15, 76.00, 54.90, '2026-05-20', '/uploads/1777925733951-sek-quark-meyveli-yogurt-yaban-mersini-1-b8f9.jpg.webp', '2026-05-08 08:54:40'),
 (58, 7, 'Krem Peynir', 12, 85.00, 61.90, '2026-05-23', '/uploads/1777925869481-1281-2.jpg', '2026-05-08 08:54:40');
 
+
 -- --------------------------------------------------------
-
---
--- Tablo için tablo yapısı `users`
---
-
-CREATE TABLE `users` (
+-- Tablo yapısı: `cart_items` (Bağlı Alt Tablo)
+-- --------------------------------------------------------
+CREATE TABLE `cart_items` (
   `id` int NOT NULL,
-  `role` enum('market','consumer') NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password_hash` varchar(255) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `city` varchar(50) NOT NULL,
-  `district` varchar(50) NOT NULL,
-  `is_verified` tinyint DEFAULT '0',
+  `consumer_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  `quantity` int NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Tablo döküm verisi `users`
---
-
-INSERT INTO `users` (`id`, `role`, `email`, `password_hash`, `name`, `city`, `district`, `is_verified`, `created_at`) VALUES
-(1, 'market', 'cons1@hotmail.com', '$2b$10$zCPqJdKNjdILOihFXTqc8.ItMV94Z2.0DZiNVJD01bxLbYYJAYFb.', 'Cons1', 'Ankara', 'Ankara', 0, '2026-05-08 07:54:45'),
-(5, 'market', 'ismail.akkurt@ug.bilkent.edu.tr', '$2b$10$JIp.EsZ5LZ/hO6xn1AhR5OLwqBnEwNNGZ4ZeMvK70ooWay2kAnjeu', 'Et Urunleri Market', 'Ankara', 'Altındag', 1, '2026-05-08 08:53:52'),
-(6, 'market', 'arda.ozkan@ug.bilkent.edu.tr', '$2b$10$JIp.EsZ5LZ/hO6xn1AhR5OLwqBnEwNNGZ4ZeMvK70ooWay2kAnjeu', 'Manav Market', 'Ankara', 'Cankaya', 1, '2026-05-08 08:53:52'),
-(7, 'market', 'alper.duru@ug.bilkent.edu.tr', '$2b$10$JIp.EsZ5LZ/hO6xn1AhR5OLwqBnEwNNGZ4ZeMvK70ooWay2kAnjeu', 'Sut Urunleri Market', 'Istanbul', 'Kadikoy', 1, '2026-05-08 08:53:52'),
-(8, 'consumer', 'cons2@hotmail.com', '$2b$10$T7lYDLMMK47bGKmG4lhbXOcXVqThIjg0lz8Le8McfhUGkVtNOMjZC', '123', 'Ankara', 'cankaya', 1, '2026-05-08 09:00:04');
 
 -- --------------------------------------------------------
-
---
--- Tablo için tablo yapısı `verification_codes`
---
-
+-- Tablo yapısı: `verification_codes` (Bağlı Alt Tablo)
+-- --------------------------------------------------------
 CREATE TABLE `verification_codes` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
@@ -130,96 +127,64 @@ CREATE TABLE `verification_codes` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Tablo döküm verisi `verification_codes`
---
-
+-- Verification Codes Verileri
 INSERT INTO `verification_codes` (`id`, `user_id`, `code`, `created_at`) VALUES
 (1, 1, '260336', '2026-05-08 07:54:45');
 
---
--- Dökümü yapılmış tablolar için indeksler
---
 
---
--- Tablo için indeksler `cart_items`
---
+-- --------------------------------------------------------
+-- İndekslerin Eklenmesi
+-- --------------------------------------------------------
+
 ALTER TABLE `cart_items`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `consumer_id` (`consumer_id`,`product_id`),
   ADD KEY `product_id` (`product_id`);
 
---
--- Tablo için indeksler `products`
---
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`),
   ADD KEY `market_id` (`market_id`);
 
---
--- Tablo için indeksler `users`
---
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
 
---
--- Tablo için indeksler `verification_codes`
---
 ALTER TABLE `verification_codes`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
 
---
--- Dökümü yapılmış tablolar için AUTO_INCREMENT değeri
---
 
---
--- Tablo için AUTO_INCREMENT değeri `cart_items`
---
+-- --------------------------------------------------------
+-- AUTO_INCREMENT Ayarları
+-- --------------------------------------------------------
+
 ALTER TABLE `cart_items`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
---
--- Tablo için AUTO_INCREMENT değeri `products`
---
 ALTER TABLE `products`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
---
--- Tablo için AUTO_INCREMENT değeri `users`
---
 ALTER TABLE `users`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
---
--- Tablo için AUTO_INCREMENT değeri `verification_codes`
---
 ALTER TABLE `verification_codes`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
---
--- Dökümü yapılmış tablolar için kısıtlamalar
---
 
---
--- Tablo kısıtlamaları `cart_items`
---
+-- --------------------------------------------------------
+-- Kısıtlamaların (Foreign Key) Tanımlanması
+-- --------------------------------------------------------
+
 ALTER TABLE `cart_items`
   ADD CONSTRAINT `cart_items_ibfk_1` FOREIGN KEY (`consumer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `cart_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
 
---
--- Tablo kısıtlamaları `products`
---
 ALTER TABLE `products`
   ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`market_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
---
--- Tablo kısıtlamaları `verification_codes`
---
 ALTER TABLE `verification_codes`
   ADD CONSTRAINT `verification_codes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
